@@ -40,7 +40,9 @@ function App() {
   }, []);
 
   if (loading) {
-    return <p>Cargando...</p>;
+    setTimeout(() => {
+      return <p>Cargando...</p>;
+    }, 3000);
   }
 
   if (error) {
@@ -48,16 +50,18 @@ function App() {
   }
 
   return (
-    <div className="container">
-      <h1>Personajes</h1>
-      <ul>
+    <div className="min-h-[100vh] flex flex-col items-center">
+      <h1 className="font-bold text-2xl pb-4 text-center p-5 w-full">
+        Personajes
+      </h1>
+      <ul className="p-5 w-[80%] flex-grow">
         {data.map((character) => (
-          <li key={character.id}>
-            <div>
+          <li key={character.id} className="shadow-lg">
+            <div className="flex items-center justify-center">
               <img src={character.image} alt={character.name} />
             </div>
-            <strong>Nombre:</strong> {character.name} <br />
-            <strong>Ki:</strong> {character.ki}
+            <strong className="pl-5">Nombre:</strong> {character.name} <br />
+            <strong className="pl-5">Ki:</strong> {character.ki}
           </li>
         ))}
       </ul>

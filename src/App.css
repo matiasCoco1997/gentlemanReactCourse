@@ -1,18 +1,16 @@
-.container {
-  text-align: center;
-  padding: 20px 40px 20px 40px;
-  background: #ffffff;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+* {
+  font-family: "Poppins", sans-serif;
 }
 
 ul {
   list-style: none;
   padding: 0;
+  content: center;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 20%);
   gap: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 li {
