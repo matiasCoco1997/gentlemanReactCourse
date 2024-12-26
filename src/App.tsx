@@ -1,52 +1,18 @@
-import { useEffect, useState } from "react";
-import { Character } from "./Interfaces/Character";
 import "./App.css";
+import { Character } from "./interfaces/Character";
+import { useFetch } from "./hooks";
+
+const url = "https://dragonball-api.com/api/characters?limit=9";
 
 function App() {
-  const [data, setData] = useState<Character[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        "https://dragonball-api.com/api/characters?limit=9"
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al obtener personajes");
-      }
-
-      const result = await response.json();
-
-      const filteredData = result.items.map((character: Character) => ({
-        id: character.id,
-        name: character.name,
-        ki: character.ki,
-        image: character.image,
-      }));
-
-      setData(filteredData);
-    } catch (error) {
-      setError(error as string);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data, loading, error } = useFetch<Character[]>(url);
 
   if (loading) {
-    setTimeout(() => {
-      return <p>Cargando...</p>;
-    }, 3000);
+    return <p>Cargando...</p>;
   }
 
   if (error) {
-    return <p>Hubo un error: {error}</p>;
+    return <p>Hubo un error: {error.message}</p>;
   }
 
   return (
@@ -55,7 +21,7 @@ function App() {
         Personajes
       </h1>
       <ul className="p-5 w-[80%] flex-grow">
-        {data.map((character) => (
+        {data!.map((character) => (
           <li key={character.id} className="shadow-lg">
             <div className="flex items-center justify-center">
               <img src={character.image} alt={character.name} />
