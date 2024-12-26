@@ -1,25 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Character } from "./Interfaces/Character";
 import "./App.css";
-import { Button } from "./components";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState("Matias");
+  const [data, setData] = useState<Character[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const countMore = () => {
-    setCount((count) => count + 1);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://dragonball-api.com/api/characters?limit=9"
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al obtener personajes");
+      }
+
+      const result = await response.json();
+
+      const filteredData = result.items.map((character: Character) => ({
+        id: character.id,
+        name: character.name,
+        ki: character.ki,
+        image: character.image,
+      }));
+
+      setData(filteredData);
+    } catch (error) {
+      setError(error as string);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const changeName = () => {
-    setName((name) => "Ariel");
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p>Cargando...</p>;
+  }
+
+  if (error) {
+    return <p>Hubo un error: {error}</p>;
+  }
 
   return (
-    <>
-      <Button label={`Sumar contador = ${count}`} parentMethod={countMore} />
-      <p>{name}</p>
-      <Button label="Cambiar Nombre" parentMethod={changeName} />
-    </>
+    <div className="container">
+      <h1>Personajes</h1>
+      <ul>
+        {data.map((character) => (
+          <li key={character.id}>
+            <div>
+              <img src={character.image} alt={character.name} />
+            </div>
+            <strong>Nombre:</strong> {character.name} <br />
+            <strong>Ki:</strong> {character.ki}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
